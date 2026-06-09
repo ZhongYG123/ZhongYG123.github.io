@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /js/
+Disallow: /css/
+
+Sitemap: https://chenxinghe.cn/sitemap.xml
+
+# Chenxinghe Trading Co., Ltd.
+# https://chenxinghe.cn
