@@ -98,7 +98,66 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
+  // --- Lightbox for product images ---
+  initLightbox();
+
 });
+
+// --- Lightbox ---
+function initLightbox() {
+  // Create overlay
+  var overlay = document.createElement('div');
+  overlay.className = 'lightbox-overlay';
+  overlay.innerHTML = '<div class="lightbox-close">&times;</div><div class="lightbox-content"><img src="" alt=""><div class="lightbox-caption"></div></div>';
+  document.body.appendChild(overlay);
+
+  var lightboxImg = overlay.querySelector('img');
+  var lightboxCaption = overlay.querySelector('.lightbox-caption');
+  var closeBtn = overlay.querySelector('.lightbox-close');
+
+  function openLightbox(src, caption) {
+    lightboxImg.src = src;
+    lightboxCaption.textContent = caption || '';
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+    setTimeout(function() { lightboxImg.src = ''; }, 300);
+  }
+
+  closeBtn.addEventListener('click', closeLightbox);
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) closeLightbox();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && overlay.classList.contains('active')) {
+      closeLightbox();
+    }
+  });
+
+  // Attach to all product card images
+  var productImages = document.querySelectorAll('.product-card-image img, .product-gallery img');
+  productImages.forEach(function(img) {
+    var container = img.closest('.product-card-image') || img.closest('.product-gallery');
+    if (container && !container.classList.contains('has-lightbox')) {
+      container.classList.add('has-lightbox');
+      container.addEventListener('click', function(e) {
+        if (e.target.tagName === 'A' || e.target.closest('a')) return;
+        var caption = '';
+        var card = container.closest('.product-card');
+        if (card) {
+          var h3 = card.querySelector('h3');
+          caption = h3 ? h3.textContent : '';
+        }
+        openLightbox(img.src, caption);
+      });
+    }
+  });
+}
 
 // --- Language Switcher (Basic) ---
 function switchLang(lang) {
